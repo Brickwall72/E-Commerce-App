@@ -1,0 +1,13 @@
+{
+  "name": "e-commerce_app",
+  "version": "0.0.0",
+  "description": "End of Back-End Development Portfolio Project",
+  "license": "ISC",
+  "author": "Sam Brickett",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

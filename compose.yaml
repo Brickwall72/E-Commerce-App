@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # 1. THE E-COMMERCE NODE.JS API SERVER
+  api-server:
+    build:
+      context: .
+    container_name: ecommerce_api_server
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ecommerce-db   # Internal virtual network hostname
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3000:3000"           # Maps browser http://localhost:3000 to app
+    depends_on:
+      ecommerce-db:
+        condition: service_healthy
+
+  # 2. THE E-COMMERCE POSTGRESQL DATABASE ENGINE
+  ecommerce-db:
+    image: postgres:16.14
+    container_name: ecommerce_isolated_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"           # Allows local GUI tools to connect to the DB
+    volumes:
+      # THE BOOTSTRAP HOOK: Schema files here compile automatically on first launch
+      - ./db/init:/docker-entrypoint-initdb.d
+      # DATA PERSISTENCE: Keeps products, users, and orders safe on your local drive
+      - ecommerce_store_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  ecommerce_store_data:

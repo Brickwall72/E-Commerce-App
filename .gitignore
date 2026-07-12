@@ -1,0 +1,11 @@
+# The heavy stuff
+node_modules/
+
+# Logs (created when npm crashes)
+npm-debug.log*
+
+# Mac system junk (if you ever use a Mac)
+.DS_Store
+
+#environment variables
+.env
