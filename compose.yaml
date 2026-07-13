@@ -26,6 +26,8 @@ services:
     image: postgres:18.4
     container_name: ecommerce_isolated_db
     restart: always
+    entrypoint: >
+      sh -c "chmod +x /docker-entrypoint-initdb.d/00_init_user.sh && exec /usr/local/bin/docker-entrypoint.sh postgres"
     environment:
       # Provisions the default cluster container name and administrative master password
       POSTGRES_DB: ${DB_NAME}
@@ -34,7 +36,7 @@ services:
       APP_DB_USER: ${DB_USER}
       APP_DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5433:5432"
+      - "5435:5432"
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
       - ecommerce_store_data:/var/lib/postgresql
