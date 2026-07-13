@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "E-Commerce Cluster",
+      "Group": "Servers",
+      "Host": "ecommerce-db",
+      "Port": 5432,
+      "MaintenanceDB": "ecommerce_platform",
+      "Username": "store_api_worker",
+      "SSLMode": "prefer",
+      "Comment": "Automated e-commerce container connection loop"
+    }
+  }
+}

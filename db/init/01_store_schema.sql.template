@@ -1,12 +1,10 @@
--- DYNAMIC ROLE INJECTION
--- This placeholder is populated at runtime by the psql executor script.
 SET ROLE :"app_user";
 
 -- =========================================================================
--- LAYER 1: USER REGISTRY & SECURITY CREDENTIAL MAP
+-- LAYER 1: USER REGISTRY
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS users (
-    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Named 'id'
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
@@ -22,7 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 -- LAYER 2: PRODUCT INVENTORY CATALOG
 -- =========================================================================
 CREATE TABLE IF NOT EXISTS products (
-    product_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Named 'id'
     title VARCHAR(150) NOT NULL,
     description TEXT,
     price NUMERIC(10, 2) NOT NULL CHECK (price >= 0.00),
@@ -34,33 +32,19 @@ CREATE TABLE IF NOT EXISTS products (
 -- =========================================================================
 -- LAYER 3: SHOPPING CART MECHANICS
 -- =========================================================================
--- This structure manages real-time, non-persistent customer shopping items.
-
 CREATE TABLE IF NOT EXISTS carts (
-    cart_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
-    -- Links directly to the user who owns this cart
-    -- ON DELETE CASCADE: If a user deletes their profile, their cart vanishes too
-    user_id UUID NOT NULL REFERENCES users(user_id) ON DELETE CASCADE UNIQUE,
-    
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Named 'id'
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE UNIQUE, -- Clean 'user_id' reference
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS cart_items (
-    cart_item_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    
-    cart_id UUID NOT NULL REFERENCES carts(cart_id) ON DELETE CASCADE,
-    product_id UUID NOT NULL REFERENCES products(product_id) ON DELETE CASCADE,
-    
-    -- Enforces that a customer can't add 0 or negative items to their cart
+CREATE TABLE IF NOT EXISTS cart_products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- Named 'id'
+    cart_id UUID NOT NULL REFERENCES carts(id) ON DELETE CASCADE,       -- Clean 'cart_id' reference
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,   -- Clean 'product_id' reference
     quantity INTEGER NOT NULL CHECK (quantity > 0),
-    
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    
-    -- Compound Unique Key: Prevents duplicate rows for the exact same item in a cart.
-    -- If a user adds the same shirt twice, your API code should increment the quantity
-    -- rather than adding a messy duplicate row.
-    UNIQUE (cart_id, product_id)
+    UNIQUE (cart_id, product_id) -- Still acts as an ironclad composite uniqueness rule!
 );

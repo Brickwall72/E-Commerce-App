@@ -26,3 +26,12 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "$CLEAN_DB" \
      -f "/docker-entrypoint-initdb.d/01_store_schema.sql.template"
 
 echo "✅ SECURE PROVISIONING: Initialization pipeline complete."
+
+# DYNAMIC DUMMY DATA RUNNER
+# Appends right below your schema loader to inject your mock records automatically
+echo "🌱 AUTOMATION: Injecting database placeholder seed records..."
+psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "$CLEAN_DB" \
+     --variable=app_user="$CLEAN_USER" \
+     -f "/docker-entrypoint-initdb.d/02_dummy_data.sql"
+
+echo "✅ SECURE PROVISIONING: Complete data initialization pipeline finished successfully."
