@@ -1,0 +1,6 @@
+services:
+  # Docker Compose will find this service match and merge these keys into production
+  api-server:
+    command: npm start      # Drops nodemon and switches back to pure node execution
+    restart: always         # Natively activates your crash-protection rule in the cloud
+    volumes: !reset []      # CRITICAL: Completely strips out your local source code mounts

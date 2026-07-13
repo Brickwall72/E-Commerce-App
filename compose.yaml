@@ -1,42 +1,46 @@
-version: '3.8'
-
 services:
   # 1. THE E-COMMERCE NODE.JS API SERVER
   api-server:
     build:
       context: .
     container_name: ecommerce_api_server
+    command: npm run dev
     environment:
       NODE_ENV: ${NODE_ENV}
-      DB_HOST: ecommerce-db   # Internal virtual network hostname
+      DB_HOST: ecommerce-db
       DB_PORT: 5432
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "3000:3000"           # Maps browser http://localhost:3000 to app
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       ecommerce-db:
         condition: service_healthy
 
   # 2. THE E-COMMERCE POSTGRESQL DATABASE ENGINE
   ecommerce-db:
-    image: postgres:16.14
+    image: postgres:18.4
     container_name: ecommerce_isolated_db
     restart: always
     environment:
+      # Provisions the default cluster container name and administrative master password
       POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # Use the admin root password from .env
+      # We inject these as raw environment strings so our initialization script can read them
+      APP_DB_USER: ${DB_USER}
+      APP_DB_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5432:5432"           # Allows local GUI tools to connect to the DB
+      - "5433:5432"
     volumes:
-      # THE BOOTSTRAP HOOK: Schema files here compile automatically on first launch
       - ./db/init:/docker-entrypoint-initdb.d
-      # DATA PERSISTENCE: Keeps products, users, and orders safe on your local drive
-      - ecommerce_store_data:/var/lib/postgresql/data
+      - ecommerce_store_data:/var/lib/postgresql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}"]
+      # Healthcheck now runs as the admin postgres user to ensure accurate cluster metrics
+      test: ["CMD", "pg_isready", "-U", "postgres", "-d", "${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
