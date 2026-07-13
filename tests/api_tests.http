@@ -1,0 +1,82 @@
+### =========================================================================
+### E-COMMERCE REST API CLIENT TESTING MATRIX
+### =========================================================================
+# Use triple hash signs '###' to cleanly separate independent request blocks.
+# The extension will render a clickable "Send Request" button above each block.
+
+@hostname = localhost
+@port = 3000
+@baseUrl = http://{{hostname}}:{{port}}/api/v1
+
+GET http://{{hostname}}:{{port}}
+Accept: application/json
+
+### 1. SYSTEM GATEWAY HEARTBEAT CHECK
+# Verifies that your Express server is online and communicating with Docker.
+GET http://{{hostname}}:{{port}}/health
+Accept: application/json
+
+
+### 2. NEW CUSTOMER PROFILE ACCOUNT REGISTRATION
+# Tests your future authentication controller logic.
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "SecurePassword123!",
+    "first_name": "Sam",
+    "last_name": "Brickett"
+}
+
+
+### 3. CUSTOMER ACCOUNT REGISTRATION - MISSING FIELDS VALIDATION
+# Verifies your Express error-handling middleware catches incomplete payloads.
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "incomplete@example.com",
+    "password": "OnlyPassword"
+}
+
+### 4. BROWSE FULL PRODUCT CATALOG
+GET {{baseUrl}}/products
+Accept: application/json
+
+
+### 5. VIEW SPECIFIC PRODUCT BY ID
+GET {{baseUrl}}/products/a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+Accept: application/json
+
+### 6. EXECUTE SHOPPING CART CHECKOUT (PLACE ORDER)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+    "shipping_address": "123 Dev Lane, Austin TX"
+}
+
+
+### 7. RETRIEVE HISTORICAL PURCHASE INVOICES
+GET {{baseUrl}}/orders
+Accept: application/json
+
+### 8. FETCH ACTIVE SHOPPING CART CONTENTS
+GET {{baseUrl}}/cart
+Accept: application/json
+
+
+### 9. ADD SPECIFIC ITEM TO SHOPPING CART
+POST {{baseUrl}}/cart/items
+Content-Type: application/json
+
+{
+    "product_id": "a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "quantity": 3
+}
+
+
+### 10. REMOVE AN ITEM FROM THE CART
+DELETE {{baseUrl}}/cart/items/a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+Accept: application/json
