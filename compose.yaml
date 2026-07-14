@@ -47,28 +47,5 @@ services:
       timeout: 5s
       retries: 5
 
-  # 3. ENTERPRISE VISUAL DATABASE MANAGER (pgAdmin 4 v9.16)
-  db-explorer:
-    image: dpage/pgadmin4:9.16
-    container_name: ecommerce_pgadmin
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@ecommerce.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-super_secure_pgadmin_password}
-      PGADMIN_LISTEN_PORT: 5050
-      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
-    ports:
-      - "5050:5050"
-    volumes:
-      # PERSISTENCE FIX: Stores your web panel sessions, logs, and layout adjustments safely on your disk
-      - pgadmin_storage:/var/lib/pgadmin
-      # AUTOMATION FIX: Maps your automated connection blueprint straight into pgAdmin's discovery path
-      - ./pgadmin/servers.json:/pgadmin4/servers.json
-    depends_on:
-      ecommerce-db:
-        condition: service_healthy
-
 volumes:
   ecommerce_store_data:
-  # Declares the persistent system storage slot for pgAdmin
-  pgadmin_storage:

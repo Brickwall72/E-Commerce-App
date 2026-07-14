@@ -1,0 +1,24 @@
+services:
+  # Docker automatically merges this directly into the base services tree!
+  db-explorer:
+    image: dpage/pgadmin4:9.16
+    container_name: ecommerce_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@ecommerce.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-super_secure_pgadmin_password}
+      PGADMIN_LISTEN_PORT: 5050
+      PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION: "False"
+      PGADMIN_SERVER_JSON_SHARE: "True"
+    ports:
+      - "5050:5050"
+    volumes:
+      - pgadmin_storage:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    depends_on:
+      ecommerce-db:
+        condition: service_healthy
+
+volumes:
+  # Declares the dev storage volume safely outside the main file block
+  pgadmin_storage:
