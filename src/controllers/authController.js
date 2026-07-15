@@ -55,7 +55,7 @@ export const loginUser = async (req, res) => {
     }
 
     try {
-        const userQuery = await query('SELECT id, email, password_hash, first_name FROM users WHERE email = $1;', [email]);
+        const userQuery = await query('SELECT id, email, password_hash, first_name, is_admin FROM users WHERE email = $1;', [email]);
         
         if (userQuery.rows.length === 0) {
             return res.status(401).json({ error: "Invalid login credentials provided." });
@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
 
         // UPGRADE: Sign an operational JSON Web Token pass that expires in 24 hours
         const token = jwt.sign(
-            { id: user.id, email: user.email },
+            { id: user.id, email: user.email, is_admin: user.is_admin },
             process.env.JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -82,7 +82,8 @@ export const loginUser = async (req, res) => {
             user: {
                 id: user.id,
                 email: user.email,
-                first_name: user.first_name
+                first_name: user.first_name,
+                is_admin: user.is_admin
             }
         });
 

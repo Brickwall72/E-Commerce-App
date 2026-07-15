@@ -8,10 +8,10 @@ SET ROLE :"app_user";
 -- ON CONFLICT (email) DO NOTHING: If the email already exists in the users table, 
 -- Postgres gracefully skips the row instead of throwing an error or wiping data.
 
-INSERT INTO users (email, password_hash, first_name, last_name, is_admin)
+INSERT INTO users (id, email, password_hash, first_name, last_name, is_admin)
 VALUES 
-('admin@store.com', '$2b$10$K7Z2g1.SjIqM9sU9uI2vOeE9O9uE6u2e3e4e5e6e7e8e9e0e1e2e3', 'Store', 'Admin', TRUE),
-('developer@test.com', '$2b$10$K7Z2g1.SjIqM9sU9uI2vOeE9O9uE6u2e3e4e5e6e7e8e9e0e1e2e3', 'Sam', 'Brickett', FALSE)
+('e9752a4e-c37a-4f2e-9f42-6ca37dfa7bba', 'admin@store.com', '$2b$10$FHbx3RvqJssFiA.xlMtfEeYBTomzKHsravUVBVQ4Tfc7WYHBZsUiW', 'Store', 'Admin', TRUE),
+('ec864d77-65a1-4d31-b6c3-00ed02a96b88', 'developer@test.com', '$2b$10$9ywxC1MNKRbW/bV6/6/1KemvN1RotJ99zZzNtRWTDmgBRdOD1KzIu', 'Sam', 'Brickett', FALSE)
 ON CONFLICT (email) DO NOTHING;
 
 -- Auto-generate 10 mock customers using an automated loop

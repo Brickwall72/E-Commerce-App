@@ -29,3 +29,13 @@ export const authenticateToken = (req, res, next) => {
         return res.status(403).json({ error: "Authentication token is invalid or expired." });
     }
 };
+
+export const requireAdmin = (req, res, next) => {
+    // Because authenticateToken ran first, req.user is guaranteed to be populated
+    if (!req.user || req.user.is_admin !== true) {
+        return res.status(403).json({ error: "Access forbidden. Administrative privileges required." })
+    }
+
+     // If they are an admin, open the gate and pass them through!
+    next();
+}

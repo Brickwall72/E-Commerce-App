@@ -39,6 +39,8 @@ Content-Type: application/json
     "password": "SecurePassword123!"
 }
 
+###
+
 @authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1Y2IxYjA4LTYzYTYtNDE5Ny05MDJkLTAyMmVhYmViMDRjZSIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODQwOTk5NTIsImV4cCI6MTc4NDE4NjM1Mn0.ZiVy7Aegv8N_Ui4WwsBNzhnNNnw_Au-H9yaeU2hSMnQ
 
 
@@ -138,3 +140,62 @@ Content-Type: application/json
 {
     "quantity": 3
 }
+
+### 12. UPDATE VALIDATED CUSTOMER PROFILE DATA
+PUT {{baseUrl}}/users/profile
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "first_name": "Samual",
+    "last_name": "Brickett"
+}
+
+### 13. ADMIN LOGIN - LOG IN AS STANDARD USER (developer@test.com)
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "SecurePassword123!"
+}
+
+###
+# (Copy token, paste into @standardUserToken)
+@standardUserToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Ijk2NTc2YzUwLWZhYWEtNGZlZS1hNThlLWMwMGRhNmY2ZjA5NiIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpc19hZG1pbiI6ZmFsc2UsImlhdCI6MTc4NDEzMzM5MCwiZXhwIjoxNzg0MjE5NzkwfQ.lupTiBz4-vfH_uAjCWKKXkdRuho2QewgzDQlnRosIzM
+
+
+### 14. ADMIN LOGIN - LOG IN AS TRUE ADMIN
+POST http://localhost:3000/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@store.com",
+    "password": "my_super_secret_password123"
+}
+
+
+###
+# (Copy token, paste into @adminToken)
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdjZDVhMmEyLTYwYjktNDBjNC1iY2EyLTM1NmU2Y2Y2OTdmYyIsImVtYWlsIjoiYWRtaW5Ac3RvcmUuY29tIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTc4NDEzMzc4NywiZXhwIjoxNzg0MjIwMTg3fQ.m0vzkDvJ8rtlxfRW48Rm_tRxQQVr2DNXAWnk341zVTU
+
+### 15. ATTEMPT REGISTRY LOOKUP AS STANDARD USER (SHOULD FAIL WITH 403)
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer {{standardUserToken}}
+Accept: application/json
+
+
+### 16. ACCESS REGISTRY LOOKUP AS TRUE ADMIN (SHOULD PASS WITH 200)
+GET http://localhost:3000/api/v1/users
+Authorization: Bearer {{adminToken}}
+Accept: application/json
+
+### 17. ACCESS INDIVIDUAL USER LOOKUP AS
+GET http://localhost:3000/api/v1/users/ec864d77-65a1-4d31-b6c3-00ed02a96b88
+Authorization: Bearer {{standardUserToken}}
+Accept: application/json
+
+### 18. ACCESS INDIVIDUAL USER LOOKUP AS
+GET http://localhost:3000/api/v1/users/ec864d77-65a1-4d31-b6c3-00ed02a96b88
+Authorization: Bearer {{adminToken}}
+Accept: application/json

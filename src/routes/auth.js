@@ -5,8 +5,95 @@ import { registerUser, loginUser } from '../controllers/authController.js';
 
 const router = express.Router();
 
-// Route Map: Relative to the mount point in index.js
+/**
+ * @openapi
+ * /api/v1/auth/register:
+ *   post:
+ *     summary: New Customer Profile Account Registration
+ *     description: Registers a fresh profile into the store database, validating parameters and executing modern Bcrypt password hashing to protect credentials.
+ *     tags:
+ *       - Authentication Module
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *               - first_name
+ *               - last_name
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: A unique customer email address matrix handle.
+ *                 example: "new_developer@test.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 minLength: 8
+ *                 description: Secure plain-text password to hash inside the container.
+ *                 example: "SuperSecurePassword123!"
+ *               first_name:
+ *                 type: string
+ *                 description: Customer first name.
+ *                 example: "Sam"
+ *               last_name:
+ *                 type: string
+ *                 description: Customer last name.
+ *                 example: "Brickett"
+ *     responses:
+ *       201:
+ *         description: User profile successfully initialized and recorded to disk.
+ *       400:
+ *         description: Missing profile parameters or failed formatting constraints.
+ *       409:
+ *         description: Account creation block. The provided email address is already registered.
+ *       500:
+ *         description: Internal database registry computation failure.
+ */
 router.post('/register', registerUser);
+
+/**
+ * @openapi
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Secure Customer Login Handshake
+ *     description: Verifies customer credentials via cryptographical hash checking. Returns a signed JSON Web Token (JWT) session pass on success to unlock guarded paths.
+ *     tags:
+ *       - Authentication Module
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Registered profile email account address.
+ *                 example: "developer@test.com"
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Clean text user password string.
+ *                 example: "my_super_secret_password123"
+ *     responses:
+ *       200:
+ *         description: Authentication successful. Access token pass issued cleanly.
+ *       400:
+ *         description: Incomplete validation parameters sent over network.
+ *       401:
+ *         description: Verification failure. Invalid login credentials provided.
+ *       500:
+ *         description: Internal authentication process routing crash.
+ */
 router.post('/login', loginUser);
 
 export default router;
