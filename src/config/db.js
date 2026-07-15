@@ -27,3 +27,5 @@ pool.on('error', (err) => {
 
 // Clean export template allowing any controller file to query the database seamlessly
 export const query = (text, params) => pool.query(text, params);
+
+export const poolInstance = pool;

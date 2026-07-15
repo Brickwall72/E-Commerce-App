@@ -12,13 +12,13 @@ GET http://{{hostname}}:{{port}}
 Accept: application/json
 
 ### 1. SYSTEM GATEWAY HEARTBEAT CHECK
-# Verifies that your Express server is online and communicating with Docker.
+
 GET http://{{hostname}}:{{port}}/health
 Accept: application/json
 
 
 ### 2. NEW CUSTOMER PROFILE ACCOUNT REGISTRATION
-# Tests your future authentication controller logic.
+
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -29,14 +29,35 @@ Content-Type: application/json
     "last_name": "Brickett"
 }
 
+### 2.1. NEW CUSTOMER PROFILE ACCOUNT SIGN-IN
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "password": "SecurePassword123!"
+}
+
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImY1Y2IxYjA4LTYzYTYtNDE5Ny05MDJkLTAyMmVhYmViMDRjZSIsImVtYWlsIjoidGVzdHVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3ODQwOTk5NTIsImV4cCI6MTc4NDE4NjM1Mn0.ZiVy7Aegv8N_Ui4WwsBNzhnNNnw_Au-H9yaeU2hSMnQ
+
 
 ### 3. CUSTOMER ACCOUNT REGISTRATION - MISSING FIELDS VALIDATION
-# Verifies your Express error-handling middleware catches incomplete payloads.
+
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
     "email": "incomplete@example.com",
+    "password": "OnlyPassword"
+}
+
+### 3.1. CUSTOMER ACCOUNT LOGIN - MISSING FIELDS VALIDATION
+
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
     "password": "OnlyPassword"
 }
 
@@ -46,7 +67,7 @@ Accept: application/json
 
 
 ### 5. VIEW SPECIFIC PRODUCT BY ID
-GET {{baseUrl}}/products/a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+GET {{baseUrl}}/products/01f574ba-71a2-428e-9d61-4094bbcd827f
 Accept: application/json
 
 ### 6. EXECUTE SHOPPING CART CHECKOUT (PLACE ORDER)
@@ -62,21 +83,58 @@ Content-Type: application/json
 GET {{baseUrl}}/orders
 Accept: application/json
 
-### 8. FETCH ACTIVE SHOPPING CART CONTENTS
+### 8. FETCH ACTIVE SHOPPING CART CONTENTS W/O TOKEN
 GET {{baseUrl}}/cart
 Accept: application/json
 
+### 8.1. FETCH ACTIVE SHOPPING CART CONTENTS W/ TOKEN
+GET {{baseUrl}}/cart
+Authorization: Bearer {{authToken}}
+Accept: application/json
 
-### 9. ADD SPECIFIC ITEM TO SHOPPING CART
+
+### 9. ADD SPECIFIC ITEM TO SHOPPING CART W/O TOKEN
 POST {{baseUrl}}/cart/items
 Content-Type: application/json
 
 {
-    "product_id": "a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "product_id": "01f574ba-71a2-428e-9d61-4094bbcd827f",
+    "quantity": 3
+}
+
+### 9.1. ADD SPECIFIC ITEM TO SHOPPING CART W/ TOKEN
+POST {{baseUrl}}/cart/items
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "product_id": "01f574ba-71a2-428e-9d61-4094bbcd827f",
     "quantity": 3
 }
 
 
-### 10. REMOVE AN ITEM FROM THE CART
-DELETE {{baseUrl}}/cart/items/a9b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d
+### 10. REMOVE AN ITEM FROM THE CART W/O TOKEN
+DELETE {{baseUrl}}/cart/items/01f574ba-71a2-428e-9d61-4094bbcd827f
 Accept: application/json
+
+### 10.1. REMOVE AN ITEM FROM THE CART W/ TOKEN
+DELETE {{baseUrl}}/cart/items/01f574ba-71a2-428e-9d61-4094bbcd827f
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+### 11. UPDATE SPECIFIC ITEM TO SHOPPING CART W/O TOKEN
+PUT {{baseUrl}}/cart/items/01f574ba-71a2-428e-9d61-4094bbcd827f
+Content-Type: application/json
+
+{
+    "quantity": 3
+}
+
+### 11.1. UPDATE SPECIFIC ITEM TO SHOPPING CART W/ TOKEN
+PUT {{baseUrl}}/cart/items/01f574ba-71a2-428e-9d61-4094bbcd827f
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "quantity": 3
+}
