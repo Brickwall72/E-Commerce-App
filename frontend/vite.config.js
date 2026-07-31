@@ -8,4 +8,14 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  cacheDir: '.vite-cache',
+  server: {
+    watch: {
+      usePolling: true, 
+    },
+    hmr: {
+      host: 'localhost',
+      port: 5173,
+    },
+  },
 })

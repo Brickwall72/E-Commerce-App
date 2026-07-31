@@ -48,5 +48,22 @@ services:
       timeout: 5s
       retries: 5
 
+  # 3. THE VISUAL STOREFRONT CLIENT UTILITY (Vite Frontend)
+  store-frontend:
+    build:
+      context: ./frontend
+    container_name: ecommerce_store_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      # Live File Sync Mirror: Maps your local frontend directory inside the container
+      - ./frontend:/usr/src/app
+      # FIXED FOR PERMISSIONS: Keeps node_modules completely isolated inside Linux storage
+      - frontend_dependencies:/usr/src/app/node_modules
+    depends_on:
+      - api-server
+
 volumes:
   ecommerce_store_data:
+  # FIXED: Declares the dedicated isolated container package slot
+  frontend_dependencies:
