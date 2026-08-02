@@ -2,54 +2,60 @@
   "hash": "9b9cb565",
   "configHash": "96818f37",
   "lockfileHash": "a81cf269",
-  "browserHash": "cb86643f",
+  "browserHash": "82aa9296",
   "optimized": {
+    "axios": {
+      "src": "../../node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "807b33f3",
+      "needsInterop": false
+    },
     "react-dom": {
       "src": "../../node_modules/react-dom/index.js",
       "file": "react-dom.js",
-      "fileHash": "71569716",
+      "fileHash": "7a3ea377",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "90d8e080",
+      "fileHash": "a793b07f",
       "needsInterop": true
     },
     "react-router-dom": {
       "src": "../../node_modules/react-router-dom/dist/index.mjs",
       "file": "react-router-dom.js",
-      "fileHash": "b41cf164",
+      "fileHash": "a8f043ba",
       "needsInterop": false
     },
     "react": {
       "src": "../../node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "f0f33499",
+      "fileHash": "381161dd",
       "needsInterop": true
     },
     "react/compiler-runtime": {
       "src": "../../node_modules/react/compiler-runtime.js",
       "file": "react_compiler-runtime.js",
-      "fileHash": "766b2bfa",
+      "fileHash": "4030cd28",
       "needsInterop": true
     },
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "3fb7c544",
+      "fileHash": "405a14f2",
       "needsInterop": true
     },
     "react/jsx-runtime": {
       "src": "../../node_modules/react/jsx-runtime.js",
       "file": "react_jsx-runtime.js",
-      "fileHash": "c5dcd91d",
+      "fileHash": "430f109b",
       "needsInterop": true
     }
   },
   "chunks": {
-    "rolldown-runtime-BPOCksWG": {
-      "file": "rolldown-runtime-BPOCksWG.js",
+    "rolldown-runtime-DC62tzP2": {
+      "file": "rolldown-runtime-DC62tzP2.js",
       "isDynamicEntry": false
     }
   }

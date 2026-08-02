@@ -1,6 +1,7 @@
 // index.js
 
 import express from 'express';
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 
@@ -12,6 +13,13 @@ import userRoutes from './src/routes/users.js';
 
 const app = express();
 const PORT = 3000;
+
+app.use(cors({
+    origin: 'http://localhost:5173', // Whitelists browser tab origin
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+}));
 
 app.use(express.json());
 
