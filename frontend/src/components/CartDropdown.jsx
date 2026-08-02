@@ -1,10 +1,12 @@
 // src/components/CartDropdown.jsx
 import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext.jsx';
 
 export default function CartDropdown({ onClose }) {
     // UPGRADED: Added removeFromCart driver linkage
     const { cartItems, cartSubtotal, removeFromCart } = useContext(CartContext); 
+    const navigate = useNavigate();
 
     return (
         <div style={{
@@ -86,8 +88,8 @@ export default function CartDropdown({ onClose }) {
                     </div>
                     <button 
                         onClick={() => {
-                            alert("🚀 Proceeding to checkout transaction layout...");
-                            onClose();
+                            onClose(); // Shut the dropdown box container
+                            navigate('/checkout'); // Route straight over to checkout layout!
                         }}
                         style={{ width: '100%', padding: '0.65rem', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', textAlign: 'center', fontSize: '0.9rem' }}
                     >

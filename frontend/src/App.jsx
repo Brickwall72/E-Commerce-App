@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import { AuthContext } from './context/AuthContext.jsx';
 import { CartContext } from './context/CartContext.jsx';
 import ProductsView from './views/ProductsView.jsx';
+import CheckoutView from './views/CheckoutView.jsx';
 import LoginView from './views/LoginView.jsx';
 import RegisterView from './views/RegisterView.jsx';
 import CartDropdown from './components/CartDropdown.jsx';
@@ -109,6 +110,7 @@ export default function App() {
           <Route path="/" element={<ProductsView />} />
           <Route path="/login" element={<LoginView />} />
           <Route path="/register" element={<RegisterView />} />
+          <Route path="/checkout" element={<CheckoutView />} />
           <Route path="*" element={<NotFoundView />} />
         </Routes>
       </main>
