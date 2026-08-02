@@ -1,71 +1,36 @@
 // src/views/LoginView.jsx
-
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext.jsx';
 import { apiClient } from '../config/apiClient.js';
+import SocialAuthButtons from '../components/SocialAuthButtons.jsx';
 
 export default function LoginView() {
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // 1. Core State Trackers
+    // Form Field States
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // 2. Standard Email/Password Form Submission Handler
     const handleCredentialSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
         setLoading(true);
 
         try {
-            // Fires network packet over port 3000 to your backend container
             const response = await apiClient.post('/auth/login', { email, password });
-            
-            // Unpacks token data and updates global session memory
             const { user, token } = response.data;
             login(user, token);
-            
-            // Seamlessly routes user back to the main catalog shelf rows
             navigate('/');
         } catch (error) {
-            console.error("❌ Frontend login capture failure:", error);
-            const statusText = error.response?.data?.error || "Connection failure validating credentials.";
-            setErrorMessage(statusText);
+            console.error("❌ Login failure:", error);
+            setErrorMessage(error.response?.data?.error || "Connection failure validating credentials.");
         } finally {
             setLoading(false);
         }
-    };
-
-    // 3. Third-Party OAuth Trigger Gateway
-    const handleSocialRedirect = (provider) => {
-        // 1. Open a standard interactive authentication popup window frame
-        const width = 500, height = 600;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
-        
-        window.open(
-            `http://localhost:3000/api/v1/auth/${provider}`,
-            'OAuth Handshake Portal',
-            `width=${width},height=${height},top=${top},left=${left}`
-        );
-
-        // 2. Set up a real-time event listener to capture the encrypted token payload message once Express emits it!
-        const messageListener = (event) => {
-            if (event.origin !== 'http://localhost:3000') return; // Safety check block
-
-            if (event.data.token) {
-                const { user, token } = event.data;
-                login(user, token); // Logs them into your AuthContext memory tower!
-                window.removeEventListener('message', messageListener);
-                navigate('/');
-            }
-        };
-
-        window.addEventListener('message', messageListener);
     };
 
     return (
@@ -78,7 +43,7 @@ export default function LoginView() {
                 </div>
             )}
 
-            {/* A. STANDARD CREDENTIALS FORM */}
+            {/* FULLY EMBEDDED MANUAL CREDENTIALS FORM */}
             <form onSubmit={handleCredentialSubmit}>
                 <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', fontWeight: 'bold' }}>Email Address</label>
@@ -111,27 +76,17 @@ export default function LoginView() {
                 </button>
             </form>
 
-            {/* B. VISUAL DIVIDER */}
             <div style={{ display: 'flex', alignItems: 'center', margin: '2rem 0' }}>
                 <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
                 <span style={{ padding: '0 1rem', color: '#777', fontSize: '0.85rem' }}>OR CONTINUE WITH</span>
                 <div style={{ flex: 1, height: '1px', background: '#ddd' }}></div>
             </div>
 
-            {/* C. THIRD-PARTY SOCIAL BUTTONS PANEL */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <button 
-                    onClick={() => handleSocialRedirect('google')}
-                    style={{ width: '100%', padding: '0.65rem', background: '#fff', color: '#333', border: '1px solid #ccc', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: '500' }}
-                >
-                    🌐 Continue with Google
-                </button>
-                <button 
-                    onClick={() => handleSocialRedirect('github')}
-                    style={{ width: '100%', padding: '0.65rem', background: '#24292e', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: '500' }}
-                >
-                    💻 Continue with GitHub
-                </button>
+            <SocialAuthButtons />
+
+            <div style={{ borderTop: '1px solid #eee', marginTop: '2rem', paddingTop: '1.5rem', textAlign: 'center' }}>
+                <span style={{ fontSize: '0.9rem', color: '#666', display: 'block', marginBottom: '0.75rem' }}>New to DevStore?</span>
+                <Link to="/register" style={{ display: 'block', width: '100%', padding: '0.65rem', boxSizing: 'border-box', background: '#fff', color: '#28a745', border: '1px solid #28a745', borderRadius: '4px', fontWeight: 'bold', textDecoration: 'none', textAlign: 'center', fontSize: '0.9rem' }}>Create an Account</Link>
             </div>
         </div>
     );
