@@ -42,9 +42,30 @@ export default function LoginView() {
 
     // 3. Third-Party OAuth Trigger Gateway
     const handleSocialRedirect = (provider) => {
-        // Redirection points straight to your Express backend OAuth initiator route!
-        // This ensures the secure environment keys remain completely hidden from the browser.
-        window.location.href = `http://localhost:3000/api/v1/auth/${provider}`;
+        // 1. Open a standard interactive authentication popup window frame
+        const width = 500, height = 600;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+        
+        window.open(
+            `http://localhost:3000/api/v1/auth/${provider}`,
+            'OAuth Handshake Portal',
+            `width=${width},height=${height},top=${top},left=${left}`
+        );
+
+        // 2. Set up a real-time event listener to capture the encrypted token payload message once Express emits it!
+        const messageListener = (event) => {
+            if (event.origin !== 'http://localhost:3000') return; // Safety check block
+
+            if (event.data.token) {
+                const { user, token } = event.data;
+                login(user, token); // Logs them into your AuthContext memory tower!
+                window.removeEventListener('message', messageListener);
+                navigate('/');
+            }
+        };
+
+        window.addEventListener('message', messageListener);
     };
 
     return (
